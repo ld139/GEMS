@@ -1,0 +1,2 @@
+Total mutants generated: 6175
+Single-site mutagenesis at 325 sites

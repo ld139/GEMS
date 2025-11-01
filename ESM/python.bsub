@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#BSUB -q s96cores
+#BSUB -J cal_weights
+#BSUB -o %J.out
+#BSUB -e %J.err
+#BSUB -n 64
+#BSUB -R "span[ptile=64]"
+
+echo job runs at the following node:
+echo $LSB_HOSTS 
+NP=$(echo $LSB_HOSTS | awk '{print NF}')
+echo ""
+echo Number of processor: $NP
+echo ""
+
+#add modulefiles
+
+#EXECUTE
+# python ./unsupervised/preprocessing.py
+# rsync -a --delete ./empty_dir/ ./redock_dataset/
+# python get_pocket.py
+# python get_complex.py
+#python get_datapair.py
+# python ../extract_crystal.py
+# python get_clean_pdb.py
+# python power_screening.py
+# python get_esm2_embedding.py
+# python remove_bad_rdkit.py
+# sh remove_sdf.sh
+sh calc_weights_eve.sh

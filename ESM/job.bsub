@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#BSUB -q gpu               # 指定作业队列为GPU队列
+#BSUB -o deep.o-%J         # 指定标准输出文件名
+#BSUB -e AMBER.e-%J        # 指定标准错误输出文件名
+#BSUB -J MSA_trans        # 指定作业名称
+#BSUB -n 8                 # 指定作业使用的CPU核心数
+#BSUB -R "span[ptile=8]"   # 指定作业在一个节点上连续使用的CPU核心数
+##BSUB -m g001             # 指定节点名称
+
+# INPUT_NAME=2zbv-solv
+
+# 获取nvidia-smi输出的GPU信息
+gpu_info=$(nvidia-smi)
+
+# 从process部分下方提取显卡进程信息并获取GPU索引
+busy_gpu_indexes=$(echo "$gpu_info" | awk '/Processes:/ {flag=1; next} flag {print $2}')
+
+# 创建临时文件存储busy GPU索引
+echo "$busy_gpu_indexes" | tr ' ' '\n' | sort > busy_gpus.txt
+
+# 生成所有GPU的索引号列表（假设有4张GPU）
+all_gpu_indexes="0 1 2 3"
+
+# 使用comm命令找到空闲GPU的索引
+free_gpu_indexes=$(comm -13 busy_gpus.txt <(echo "$all_gpu_indexes" | tr ' ' '\n' | sort))
+
+# 随机选择一个空闲GPU索引
+selected_gpu_index=$(echo "$free_gpu_indexes" | tr ' ' '\n' | shuf -n 1)
+
+# 输出选择的空闲GPU索引
+echo "Selected Free GPU Index: $selected_gpu_index"
+
+# 删除临时文件
+rm busy_gpus.txt
+
+# 导出选择的GPU索引为CUDA_VISIBLE_DEVICES环境变量
+export CUDA_VISIBLE_DEVICES="$selected_gpu_index"
+
+#--- LSF ---
+echo job runs at the following node:  # 打印作业运行的节点信息
+echo $LSB_HOSTS 
+NP=$(echo $LSB_HOSTS | awk '{print NF}')  # 获取作业使用的CPU核心数
+NNODE=$(echo $LSB_HOSTS | sed -e "s/ /\n/g" | uniq - | wc -l)  # 获取作业使用的节点数
+echo ""
+echo Number of processor: $NP  # 打印CPU核心数
+
+#NP=$1
+#echo NP $NP
+NP2=$((NP%8))
+
+if [ $NP2 -ne 0 ]; then  # 检查CPU核心数是否为8的倍数
+  echo NP only can be 8, 16, 24, or 32
+  exit
+fi
+
+# 余下的脚本部分为作业的实际运行命令
+#conda activate esmfold
+sh scoring_ESM_IF1_substitutions.sh
+# sh scoring_MSA_transformer_substitutions.sh
