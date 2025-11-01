@@ -1,6 +1,6 @@
 # GEMS
 <div align="center">
-  <img src="./fig/fig_R1.svg" width="600" height="300" alt="GEMS Overview">
+  <img src="./fig/fig1_R1.svg" width="600" height="300" alt="GEMS Overview">
 </div>
 
 GEMS is a multimodal framework for enzyme engineering that ensembles evolutionary (MSA-based), structure-informed, and sequence-based models (SaProt, ESM-IF1, MSA Transformer, and GEMME) to prioritize functional variants in a zero-shot setting.
@@ -57,8 +57,6 @@ Required
   - Path: MSA/<DMS_id>/
   - Contents: your MSA file(s), e.g., <DMS_id>.a3m (or other format supported by your ESM/GEMME setup)
   - Note: The pipeline will compute MSA weights automatically into MSA_weights/
-
-Optional (if your ESM-IF1 workflow requires it)
 - Wild-type structure (PDB)
   - Path: DATASET/<DMS_id>/<DMS_id>.pdb
 
@@ -180,15 +178,7 @@ Common options
 ## 7) Citation
 
 If you use GEMS in your research, please cite this repository and the upstream models:
-- SaProt
-- ESM-IF1
-- ESM MSA Transformer
-- GEMME
-
-(Replace with full references.)
-
----
-
-## 8) License
-
-This project is distributed under the license specified in the LICENSE file (if present). If no license file is provided, all rights are reserved by the authors.
+- [SaProt](https://github.com/westlake-repl/SaProt)
+- [ESM-IF1](https://github.com/facebookresearch/esm)
+- [MSA Transformer]((https://github.com/facebookresearch/esm))
+- [GEMME](https://www.lcqb.upmc.fr/GEMME/Home.html)
