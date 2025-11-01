@@ -180,5 +180,5 @@ Common options
 If you use GEMS in your research, please cite this repository and the upstream models:
 - [SaProt](https://github.com/westlake-repl/SaProt)
 - [ESM-IF1](https://github.com/facebookresearch/esm)
-- [MSA Transformer]((https://github.com/facebookresearch/esm))
+- [MSA Transformer](https://github.com/facebookresearch/esm)
 - [GEMME](https://www.lcqb.upmc.fr/GEMME/Home.html)
