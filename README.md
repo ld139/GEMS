@@ -55,7 +55,7 @@ Required
   - Path: DATASET/<DMS_id>/<DMS_id>.fasta
 - Multiple sequence alignment (MSA)
   - Path: MSA/<DMS_id>/
-  - Contents: your MSA file(s), e.g., <DMS_id>.a3m (or other format supported by your ESM/GEMME setup)
+  - Contents: your MSA file(s), e.g., <DMS_id>.a2m (or other format supported by your ESM/GEMME setup)
   - Note: The pipeline will compute MSA weights automatically into MSA_weights/
 - Wild-type structure (PDB)
   - Path: DATASET/<DMS_id>/<DMS_id>.pdb
@@ -157,7 +157,73 @@ Common options
 
 ---
 
-## 6) Troubleshooting
+## 6) Greedy post-selection (greedy.py)
+
+Purpose
+- Perform a greedy post-selection on run.py outputs to pick a subset of mutants that balances activity (fitness) and diversity.
+- Default is tailored for single mutants to improve position coverage in the top-N.
+
+Inputs
+- Requires the files produced by run.py:
+  - DATASET/<DMS_id>/<DMS_id>.fasta (wild-type sequence)
+  - DATASET/<DMS_id>/<DMS_id>_rank.csv (must contain columns: mutant, fitness)
+
+Output
+- DATASET/<DMS_id>/greedy_<DMS_id>.csv
+  - Contains the selected mutants (and their original columns), ordered by the greedy selection sequence.
+
+Minimal usage (single mutants, improve position coverage)
+```
+python greedy.py --DMS_id <YOUR_DMS_ID> --subset_size 50
+```
+
+Notes
+- The default mode is single with a coverage-oriented strategy, which tends to increase unique positions in the top-N selection.
+- If your ranking file includes multi-site mutants, switch to the original entropy logic:
+  - Add: --mode multi
+- You can adjust the activity/diversity trade-off:
+  - --weight controls the balance (higher = more activity-driven; lower = more diversity-driven)
+- Performance:
+  - Use --top_n to pre-filter the candidate pool by fitness (default 1000) for speed.
+
+Common options (greedy.py)
+- --DMS_id: Dataset ID (required)
+- --subset_size: Number of mutants to select (e.g., 50, 200, 500)
+- --weight: Final score = w*activity + (1-w)*diversity (default 0.55)
+- --top_n: Pre-filter by top-N fitness before selection (default 1000)
+- --offset: Position indexing offset (default 1)
+- --mode: single | multi (default single)
+  - single uses a single-mutant–aware diversity
+  - multi uses the original entropy across all sites (including wild type)
+- For single-mode strategies (optional):
+  - --single_strategy: coverage | entropy | hybrid (default coverage)
+    - coverage: prioritize covering new positions
+    - entropy: mutated-only entropy × coverage
+    - hybrid: combine both
+  - --new_pos_reward: reward for a new position (default 1.0)
+  - --repeat_pos_decay: penalty factor for repeatedly selecting the same position (default 0.3)
+  - --entropy_weight: weight of entropy within hybrid (default 0.5)
+
+Examples
+- Stronger position coverage in top-50:
+  ```
+  python greedy.py \
+    --DMS_id <YOUR_DMS_ID> \
+    --subset_size 50 \
+    --mode single \
+    --single_strategy coverage \
+    --weight 0.55 \
+    --new_pos_reward 0.3 \
+    --repeat_pos_decay 0.8
+  ```
+- Original entropy logic (for multi-site libraries):
+  ```
+  python greedy.py --DMS_id <YOUR_DMS_ID> --subset_size 200 --mode multi
+  ```
+
+---
+
+## 7) Troubleshooting
 
 - Docker/GEMME not found
   - Install Docker; pull the image: docker pull elodielaine/gemme:gemme
@@ -175,7 +241,7 @@ Common options
 
 ---
 
-## 7) Citation
+## 8) Citation
 
 If you use GEMS in your research, please cite this repository and the upstream models:
 - [SaProt](https://github.com/westlake-repl/SaProt)
