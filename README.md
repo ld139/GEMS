@@ -240,10 +240,27 @@ Examples
   - MSA and MSA_weights are expected at repo root; weights are computed with cwd=./ESM internally
 
 ---
-
 ## 8) Citation
 
-If you use GEMS in your research, please cite this repository and the upstream models:
+If you find GEMS useful in your research, please cite our paper:
+
+**A Multimodal Ensemble Framework for Optimal Mutant Prediction and Computational Enzyme Engineering**  
+Ding Luo, Huining Ji, Baodong Hu, Jinxing Cai, Kaiqi Wen, Xiaoyang Qu, Mingfeng Cao, Xinrui Zhao, and Binju Wang.  
+*Angewandte Chemie International Edition* (2025).  
+DOI: [10.1002/anie.202521396](https://doi.org/10.1002/anie.202521396)
+
+```bibtex
+@article{Luo2025GEMS,
+  title   = {A Multimodal Ensemble Framework for Optimal Mutant Prediction and Computational Enzyme Engineering},
+  author  = {Luo, Ding and Ji, Huining and Hu, Baodong and Cai, Jinxing and Wen, Kaiqi and Qu, Xiaoyang and Cao, Mingfeng and Zhao, Xinrui and Wang, Binju},
+  journal = {Angewandte Chemie International Edition},
+  year    = {2025},
+  doi     = {10.1002/anie.202521396},
+  url     = {https://doi.org/10.1002/anie.202521396}
+}
+```
+
+Please also cite the upstream models and datasets used in this framework:
 - [SaProt](https://github.com/westlake-repl/SaProt)
 - [ESM-IF1](https://github.com/facebookresearch/esm)
 - [MSA Transformer](https://github.com/facebookresearch/esm)
