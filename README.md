@@ -2,6 +2,7 @@
 <div align="center">
   <img src="./fig/fig_R1.svg" width="600" height="300" alt="GEMS Overview">
 </div>
+
 GEMS is a multimodal framework for enzyme engineering that ensembles evolutionary (MSA-based), structure-informed, and sequence-based models (SaProt, ESM-IF1, MSA Transformer, and GEMME) to prioritize functional variants in a zero-shot setting.
 
 ---
