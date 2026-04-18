@@ -22,10 +22,12 @@ mkdir -p "${OUTPUT_DIR}"
 # 转换 a2m 到 a3m
 perl reformat.pl "${BASE_DIR}/MSA/${task_name}.a2m" "${BASE_DIR}/MSA/${task_name}.a3m"
 
-# 在 Docker 容器中执行 GEMME 命令
-docker run -it --rm \
+# 【修改1：删除了 udocker pull，直接使用本地离线镜像】
+
+# 【修改2：在 udocker 容器中执行 GEMME 命令，替换为 udocker images 显示的名字】
+udocker run --rm \
     --volume "${BASE_DIR}:${BASE_DIR}" \
-    99b37549eec8 \
+    9eb4ccfad0f954cd:gemme \
     sh -c "GEMME_PATH=/opt/GEMME && \
            cd ${OUTPUT_DIR} && \
            python2.7 \$GEMME_PATH/gemme.py \

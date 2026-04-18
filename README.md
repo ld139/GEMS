@@ -1,6 +1,6 @@
 # GEMS
 <div align="center">
-  <img src="./fig/fig1_R1.svg" width="600" height="300" alt="GEMS Overview">
+  <img src="./fig/fig_R1.svg" width="600" height="300" alt="GEMS Overview">
 </div>
 
 GEMS is a multimodal framework for enzyme engineering that ensembles evolutionary (MSA-based), structure-informed, and sequence-based models (SaProt, ESM-IF1, MSA Transformer, and GEMME) to prioritize functional variants in a zero-shot setting.
@@ -11,41 +11,65 @@ GEMS is a multimodal framework for enzyme engineering that ensembles evolutionar
 
 Prerequisites
 - Conda (Mamba recommended)
-- Docker (for GEMME)
+- udocker (for GEMME, allows rootless container execution, ideal for HPC/servers)
 - Python 3.9+ (installed via the provided conda envs)
 
 Clone the repository
-```
-git clone https://github.com/ld139/GEMS.git
+```bash
+git clone [https://github.com/ld139/GEMS.git](https://github.com/ld139/GEMS.git)
 cd GEMS
 ```
 
 Create environments
+
+
 ```
 conda env create -f SaProt_env.yaml
 conda env create -f esmfold.yaml
 ```
 
-Install GEMME (Docker, recommended)
+Install GEMME (udocker, local and root-free)
+To ensure maximum portability, we configure `udocker` to store its environment directly inside the project folder.
+
+
 ```
-docker pull elodielaine/gemme:gemme
+# 1. Install udocker (if not already installed globally)
+pip install udocker
+
+# 2. Set the udocker directory to be local to this project folder
+export UDOCKER_DIR="$PWD/.udocker_env"
+udocker install
+
+# 3. Pull the GEMME image into the local environment
+udocker pull elodielaine/gemme:gemme
+
+# (Optional) If you are installing on an offline compute node, 
+# you can load the image from a tarball instead:
+# udocker load -i your_gemme_image.tar
 ```
 
+*Note: Whenever you run the pipeline in a new terminal session, make sure to run `export UDOCKER_DIR="$PWD/.udocker_env"` first so the script knows where to find the GEMME image.*
+
 Model weights and checkpoints
+
 - SaProt (default): ./SaProt/weights/PLMs/SaProt_650M_AF2
-  - Put the SaProt checkpoint in this folder or pass a custom path via --ckpt_path_saprot
+   - Put the SaProt checkpoint in this folder or pass a custom path via --ckpt_path_saprot
+
 - ESM-IF1 (default): ~/.cache/torch/hub/checkpoints/esm_if1_gvp4_t16_142M_UR50.pt
 - MSA Transformer (default): ~/.cache/torch/hub/checkpoints/esm_msa1b_t12_100M_UR50S.pt
 
 You can pre-download ESM weights (optional) by running in the esmfold env:
+
+
 ```
 python -c "import esm; esm.pretrained.esm_if1_gvp4_t16_142M_UR50()"
 python -c "import esm; esm.pretrained.esm_msa1b_t12_100M_UR50S()"
 ```
+
 Then point --ckpt_path_esmif1 and --ckpt_path_msatransformer to the downloaded .pt files if they differ from the defaults.
 
----
 
+---
 ## 2) Inputs (what you must prepare)
 
 You provide one dataset ID (DMS_id) and the required input files/folders:
