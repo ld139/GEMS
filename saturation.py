@@ -142,7 +142,7 @@ def save_mutation_combinations_to_file(wt_id, combinations, combinations_str, mu
     with open(os.path.join(output_dir, f'{wt_id}.txt'), 'w') as f:
         for combo in combinations:
             if isinstance(combo, list):  # 组合突变
-                f.write(':'.join(combo) + '\n')
+                f.write(','.join(combo) + '\n')
             else:  # 单点突变
                 f.write(combo + '\n')
     
